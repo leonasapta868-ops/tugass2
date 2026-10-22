@@ -1,0 +1,34 @@
+name: Build Tugas 2 EXE
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tugas_2.cpp"
+      - ".github/workflows/build.yml"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-gcc
+
+      - name: Compile C++ to EXE
+        shell: msys2 {0}
+        run: |
+          g++ tugas_2.cpp -o tugas_2.exe -static
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: tugas-2-exe
+          path: tugas_2.exe
